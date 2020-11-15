@@ -8,6 +8,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
       - id: buildx
         uses: docker/setup-buildx-action@v1
 
