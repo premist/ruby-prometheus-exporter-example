@@ -26,5 +26,8 @@ jobs:
       - name: Docker login
         run: echo "${{ github.token }}" | docker login https://docker.pkg.github.com -u ${GITHUB_ACTOR} --password-stdin
 
-      - name: Build linux/arm image
-        run: docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.IMAGE_NAME }} --push .
+      - name: Build multiarch image
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.IMAGE_NAME }} --load .
+
+      - name: Push multiarch image
+        run: docker push ${{ env.IMAGE_NAME }}
