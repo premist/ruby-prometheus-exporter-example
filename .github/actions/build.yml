@@ -1,0 +1,19 @@
+name: Build Docker Multiarch
+
+on: push
+
+jobs:
+  build:
+    steps:
+      - uses: actions/checkout@v2
+      - id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Builder instance name
+        run: echo ${{ steps.buildx.outputs.name }}
+
+      - name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
+
+      - name: Build linux/arm image
+        run: docker buildx build --platform linux/arm64 -t test .
