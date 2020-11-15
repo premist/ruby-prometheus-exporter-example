@@ -2,6 +2,9 @@ name: Build Docker Multiarch
 
 on: push
 
+env:
+  IMAGE_NAME: docker.pkg.github.com/premist/ruby-prometheus-exporter-example:${{ github.sha }}
+
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -12,15 +15,16 @@ jobs:
       - uses: docker/setup-qemu-action@v1
         with:
           platforms: all
-
       - id: buildx
         uses: docker/setup-buildx-action@v1
 
       - name: Builder instance name
         run: echo ${{ steps.buildx.outputs.name }}
-
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
 
+      - name: Docker login
+        run: echo "${{ github.token }}" | docker login https://docker.pkg.github.com -u ${GITHUB_ACTOR} --password-stdin
+
       - name: Build linux/arm image
-        run: docker buildx build --platform linux/arm64 -t test .
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.IMAGE_NAME }} --push .
